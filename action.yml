@@ -22,32 +22,35 @@ inputs:
     required: false
 runs:
   using: "composite"
-  env:
-    AWS_ACCESS_KEY_ID: ${{ inputs.DEV_AWS_ACCESS_KEY_ID }}
-    AWS_SECRET_ACCESS_KEY: ${{ inputs.DEV_AWS_ACCESS_KEY_SECRET }}
-    AWS_DEFAULT_REGION: ${{ inputs.aws_region }}
-    AWS_ACCOUNT_ID: ${{ inputs.aws_account_id }}
-    ECR_REPOSITORY_NAME: ${{ inputs.ecr_repository_name }}
   steps:
-    - name: "Define ECR version"
-      run: echo "ecr_version=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${GITHUB_SHA}" >> $GITHUB_ENV
+    - run: echo Hello ${{ inputs.who-to-greet }}.
       shell: bash
-    - name: "Define ECR version for latest tag"
-      run: echo "ecr_version_latest=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest" >> $GITHUB_ENV
-      shell: bash
-    - name: "Build image"
-      working-directory: ${{ build_directory }}
-      run: docker build -t ${{ env.ecr_version }} -t ${{ env.ecr_version_latest }} .
-      shell: bash
-    - name: "Dev ECR: login"
-      run: aws ecr get-login-password | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
-      shell: bash
-    - name: "Dev ECR: tag image"
-      run: docker tag ${{ env.ecr_version_latest }} ${{ env.ecr_version }}
-      shell: bash
-    - name: "Dev ECR: push image"
-      run: docker push ${{ env.ecr_version }}
-      shell: bash
-    - name: "Dev ECR: push latest tag"
-      run: docker push ${{ env.ecr_version_latest }}
-      shell: bash
+  # env:
+  #   AWS_ACCESS_KEY_ID: ${{ inputs.DEV_AWS_ACCESS_KEY_ID }}
+  #   AWS_SECRET_ACCESS_KEY: ${{ inputs.DEV_AWS_ACCESS_KEY_SECRET }}
+  #   AWS_DEFAULT_REGION: ${{ inputs.aws_region }}
+  #   AWS_ACCOUNT_ID: ${{ inputs.aws_account_id }}
+  #   ECR_REPOSITORY_NAME: ${{ inputs.ecr_repository_name }}
+  # steps:
+  #   - name: "Define ECR version"
+  #     run: echo "ecr_version=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:${GITHUB_SHA}" >> $GITHUB_ENV
+  #     shell: bash
+  #   - name: "Define ECR version for latest tag"
+  #     run: echo "ecr_version_latest=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest" >> $GITHUB_ENV
+  #     shell: bash
+  #   - name: "Build image"
+  #     working-directory: ${{ build_directory }}
+  #     run: docker build -t ${{ env.ecr_version }} -t ${{ env.ecr_version_latest }} .
+  #     shell: bash
+  #   - name: "Dev ECR: login"
+  #     run: aws ecr get-login-password | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
+  #     shell: bash
+  #   - name: "Dev ECR: tag image"
+  #     run: docker tag ${{ env.ecr_version_latest }} ${{ env.ecr_version }}
+  #     shell: bash
+  #   - name: "Dev ECR: push image"
+  #     run: docker push ${{ env.ecr_version }}
+  #     shell: bash
+  #   - name: "Dev ECR: push latest tag"
+  #     run: docker push ${{ env.ecr_version_latest }}
+  #     shell: bash
