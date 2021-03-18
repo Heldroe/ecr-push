@@ -30,7 +30,7 @@ runs:
       run: echo "ecr_version_latest=${{ inputs.aws_account_id }}.dkr.ecr.${{ inputs.aws_region }}.amazonaws.com/${{ inputs.ecr_repository_name }}:latest" >> $GITHUB_ENV
       shell: bash
     - name: "Build image"
-      working-directory: ${{ build_directory }}
+      working-directory: ${{ inputs.build_directory }}
       run: docker build -t ${{ env.ecr_version }} -t ${{ env.ecr_version_latest }} .
       shell: bash
     - name: "Dev ECR: login"
