@@ -26,12 +26,9 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: "Define ECR path"
-      run: echo "ecr_path=${{ inputs.aws_account_id }}.dkr.ecr.${{ inputs.aws_region }}.amazonaws.com/${{ inputs.ecr_repository_name }}" >> $GITHUB_ENV
-      shell: bash
     - name: "Build image"
       working-directory: ${{ inputs.build_directory }}
-      run: docker build -t ${{ env.ecr_path }}:${{ inputs.tag }} -t ${{ env.ecr_path }}:latest .
+      run: docker build -t ${{ inputs.aws_account_id }}.dkr.ecr.${{ inputs.aws_region }}.amazonaws.com/${{ inputs.ecr_repository_name }}:${{ inputs.tag }} -t ${{ inputs.aws_account_id }}.dkr.ecr.${{ inputs.aws_region }}.amazonaws.com/${{ inputs.ecr_repository_name }}:latest .
       shell: bash
     - name: "Dev ECR: login"
       env:
@@ -41,8 +38,8 @@ runs:
       run: aws ecr get-login-password | docker login --username AWS --password-stdin ${{ inputs.aws_account_id }}.dkr.ecr.${{ inputs.aws_region }}.amazonaws.com
       shell: bash
     - name: "Dev ECR: push ${{ inputs.tag }} tag"
-      run: docker push ${{ env.ecr_path }}:${{ inputs.tag }}
+      run: docker push ${{ inputs.aws_account_id }}.dkr.ecr.${{ inputs.aws_region }}.amazonaws.com/${{ inputs.ecr_repository_name }}:${{ inputs.tag }}
       shell: bash
     - name: "Dev ECR: push latest tag"
-      run: docker push ${{ env.ecr_path }}:latest
+      run: docker push ${{ inputs.aws_account_id }}.dkr.ecr.${{ inputs.aws_region }}.amazonaws.com/${{ inputs.ecr_repository_name }}:latest
       shell: bash
