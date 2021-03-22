@@ -30,16 +30,16 @@ runs:
       working-directory: ${{ inputs.build_directory }}
       run: docker build -t ${{ inputs.aws_account_id }}.dkr.ecr.${{ inputs.aws_region }}.amazonaws.com/${{ inputs.ecr_repository_name }}:${{ inputs.tag }} -t ${{ inputs.aws_account_id }}.dkr.ecr.${{ inputs.aws_region }}.amazonaws.com/${{ inputs.ecr_repository_name }}:latest .
       shell: bash
-    - name: "Dev ECR: login"
+    - name: "ECR login"
       env:
         AWS_DEFAULT_REGION: ${{ inputs.aws_region }}
         AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
         AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
       run: aws ecr get-login-password | docker login --username AWS --password-stdin ${{ inputs.aws_account_id }}.dkr.ecr.${{ inputs.aws_region }}.amazonaws.com
       shell: bash
-    - name: "Dev ECR: push ${{ inputs.tag }} tag"
+    - name: "ECR push ${{ inputs.tag }} tag"
       run: docker push ${{ inputs.aws_account_id }}.dkr.ecr.${{ inputs.aws_region }}.amazonaws.com/${{ inputs.ecr_repository_name }}:${{ inputs.tag }}
       shell: bash
-    - name: "Dev ECR: push latest tag"
+    - name: "ECR push latest tag"
       run: docker push ${{ inputs.aws_account_id }}.dkr.ecr.${{ inputs.aws_region }}.amazonaws.com/${{ inputs.ecr_repository_name }}:latest
       shell: bash
